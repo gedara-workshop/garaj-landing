@@ -1,49 +1,281 @@
+/* Garaj tokens, from the Garaj design system. Light first, dark redefines tokens only. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f5f5f1;
+  --surface: #ffffff;
+  --sunken: #ebebe5;
+  --ink: #141917;
+  --muted: #5a625f;
+  --line: #dcdcd4;
+  --brand: #0e5c55;
+  --brand-ink: #ffffff;
+  --brand-tint: #dcefeb;
+  --signal: #f2a93b;
+  --ok: #1d7238;
+  --ok-tint: #e0f1e5;
+  --soon: #8a4f00;
+  --soon-tint: #fcefd5;
+  --due: #b02318;
+  --due-tint: #fbe2df;
+  --plate-bg: #ffffff;
+  --plate-ink: #111111;
+  --shadow: 0 1px 2px rgba(20, 25, 23, 0.06), 0 10px 30px rgba(20, 25, 23, 0.08);
+
+  --font-sans: "Inter Variable", "Noto Sans Sinhala", "Noto Sans Tamil", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-si: "Noto Sans Sinhala", "Inter Variable", system-ui, sans-serif;
+  --font-ta: "Noto Sans Tamil", "Inter Variable", system-ui, sans-serif;
+
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #101312;
+    --surface: #191d1c;
+    --sunken: #232827;
+    --ink: #eef1ef;
+    --muted: #a2aaa6;
+    --line: #2f3533;
+    --brand: #4cc3b4;
+    --brand-ink: #06211e;
+    --brand-tint: #15302c;
+    --ok: #5fcf88;
+    --ok-tint: #163322;
+    --soon: #f3b543;
+    --soon-tint: #3a2c10;
+    --due: #ff8b7b;
+    --due-tint: #3e1a16;
+    --plate-bg: #f2f2ec;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
   }
 }
 
-html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  padding-inline: 20px;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
   margin: 0;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+  color: var(--brand);
 }
 
-@media (prefers-color-scheme: dark) {
+img {
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
   html {
-    color-scheme: dark;
+    scroll-behavior: auto;
   }
+}
+
+/* Shared primitives used across sections */
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 24px;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  font: 600 16px/1 var(--font-sans);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: var(--brand-ink);
+  transition: filter 0.15s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.section {
+  padding-block: 64px;
+  border-top: 1px solid var(--line);
+}
+
+.section-head {
+  max-width: 640px;
+}
+
+.section-head h2 {
+  font-size: clamp(28px, 3.6vw, 40px);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  font-weight: 800;
+}
+
+.section-head p {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.plate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 7px;
+  background: var(--plate-bg);
+  color: var(--plate-ink);
+  border: 1.5px solid var(--plate-ink);
+  border-radius: 6px;
+  font: 700 13px/1 var(--font-mono);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.plate i {
+  font-style: normal;
+  font-size: 9px;
+  padding-right: 6px;
+  border-right: 1px solid var(--plate-ink);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chip svg {
+  width: 13px;
+  height: 13px;
+}
+
+.chip-ok {
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+
+.chip-soon {
+  background: var(--soon-tint);
+  color: var(--soon);
+}
+
+.chip-due {
+  background: var(--due-tint);
+  color: var(--due);
+}
+
+.ticket {
+  position: relative;
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+
+.ticket-main {
+  flex: 1;
+  padding: 12px 14px;
+  min-width: 0;
+}
+
+.ticket-kind {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.ticket-date {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 2px 0 8px;
+}
+
+.ticket-stub {
+  width: 78px;
+  flex: none;
+  border-left: 2px dashed var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.ticket-stub b {
+  font: 600 24px/1 var(--font-mono);
+}
+
+.ticket-stub span {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.ticket-ok .ticket-stub b {
+  color: var(--ok);
+}
+
+.ticket-soon .ticket-stub b {
+  color: var(--soon);
+}
+
+.ticket-due .ticket-stub b {
+  color: var(--due);
 }
