@@ -1,11 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
-import { joinWaitlist, type SignupState } from "@/app/actions";
+import { useState, type FormEvent } from "react";
+import { signupEndpoint } from "@/content/site";
 import { Check } from "./ui";
 import styles from "./Signup.module.css";
 
-const initialState: SignupState = { status: "idle", message: "" };
+type Status = "idle" | "sending" | "success" | "error";
 
 const perks = [
   "Help decide which features come first",
@@ -13,8 +13,45 @@ const perks = [
   "Tell us what you drive and we'll make sure it works for you",
 ];
 
+const looksLikeEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const looksLikePhone = (v: string) => v.replace(/[^0-9]/g, "").length >= 9;
+
 export function Signup() {
-  const [state, formAction, pending] = useActionState(joinWaitlist, initialState);
+  const [status, setStatus] = useState<Status>("idle");
+  const [message, setMessage] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    const contact = String(data.get("contact") ?? "").trim();
+    if (!looksLikeEmail(contact) && !looksLikePhone(contact)) {
+      setStatus("error");
+      setMessage("Add a WhatsApp number or email so we can reach you.");
+      form.querySelector<HTMLInputElement>("#contact")?.focus();
+      return;
+    }
+
+    setStatus("sending");
+    setMessage("");
+    try {
+      // Sent straight from the visitor's browser, which Formspree's spam filter trusts
+      // far more than a server-to-server request.
+      const res = await fetch(signupEndpoint, {
+        method: "POST",
+        body: data,
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) throw new Error(`Form service responded ${res.status}`);
+      setStatus("success");
+    } catch {
+      setStatus("error");
+      setMessage("Couldn't save that just now. Check your connection and try again.");
+    }
+  }
+
+  const sending = status === "sending";
 
   return (
     <section className="section" id="join" aria-labelledby="joinh">
@@ -36,16 +73,17 @@ export function Signup() {
         </div>
 
         <div className={styles.form}>
-          {state.status === "success" ? (
+          {status === "success" ? (
             <div className={styles.thanks} role="status">
               <b>You&apos;re on the list.</b>
               <p>We&apos;ll message you once when Garaj is ready to try. Thanks for helping us build it.</p>
             </div>
           ) : (
-            <form action={formAction} className={styles.fields}>
+            <form onSubmit={handleSubmit} className={styles.fields} noValidate>
+              <input type="hidden" name="_subject" value="New Garaj early access signup" />
               <label htmlFor="name">
                 Your name
-                <input id="name" name="name" autoComplete="given-name" placeholder="Dinal" />
+                <input id="name" name="name" autoComplete="given-name" placeholder="Dinal" maxLength={80} />
               </label>
               <label htmlFor="contact">
                 WhatsApp number or email
@@ -55,6 +93,7 @@ export function Signup() {
                   autoComplete="email"
                   placeholder="077 123 4567 or you@gmail.com"
                   required
+                  maxLength={120}
                   aria-describedby="contact-hint"
                 />
                 <span className={styles.hint} id="contact-hint">
@@ -89,16 +128,17 @@ export function Signup() {
               </label>
               <label htmlFor="drives">
                 What do you drive? <span className={styles.hint}>(optional)</span>
-                <input id="drives" name="drives" placeholder="Corolla, a scooter, a three-wheeler..." />
+                <input id="drives" name="drives" placeholder="Corolla, a scooter, a three-wheeler..." maxLength={200} />
               </label>
-              <input className={styles.honeypot} type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-              {state.status === "error" ? (
+              {/* Formspree's built-in honeypot: real people never fill this. */}
+              <input className={styles.honeypot} type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+              {status === "error" ? (
                 <p className={styles.err} role="alert">
-                  {state.message}
+                  {message}
                 </p>
               ) : null}
-              <button className="btn btn-primary" type="submit" disabled={pending}>
-                {pending ? "Joining..." : "Join early access"}
+              <button className="btn btn-primary" type="submit" disabled={sending}>
+                {sending ? "Joining..." : "Join early access"}
               </button>
             </form>
           )}

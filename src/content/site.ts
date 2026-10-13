@@ -73,3 +73,8 @@ export const localPoints = [
 ];
 
 export const formatLkr = (n: number) => n.toLocaleString("en-LK");
+
+// Formspree form that stores early access signups. Form endpoints are public by design
+// (they sit in the page's HTML), so a default lives here; set NEXT_PUBLIC_FORMSPREE_ENDPOINT to override.
+export const signupEndpoint =
+  process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || "https://formspree.io/f/xaeqpjzv";
