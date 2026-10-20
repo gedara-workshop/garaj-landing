@@ -78,3 +78,8 @@ export const formatLkr = (n: number) => n.toLocaleString("en-LK");
 // (they sit in the page's HTML), so a default lives here; set NEXT_PUBLIC_FORMSPREE_ENDPOINT to override.
 export const signupEndpoint =
   process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || "https://formspree.io/f/xaeqpjzv";
+
+// Public address for privacy questions and account deletion requests (privacy policy,
+// delete-account page, Play listing). TODO: replace with the Garaj Gmail before publishing.
+export const contactEmail = "REPLACE_WITH_GARAJ_GMAIL";
+export const legalUpdated = "20 October 2026";

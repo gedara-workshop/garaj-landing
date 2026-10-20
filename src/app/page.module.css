@@ -41,3 +41,9 @@
   font-size: 14px;
   color: var(--muted);
 }
+
+.footerLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
