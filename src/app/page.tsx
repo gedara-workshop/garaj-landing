@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Hero } from "@/components/Hero";
 import { Features, Garage, MadeForSriLanka } from "@/components/Sections";
 import { Signup } from "@/components/Signup";
@@ -26,7 +27,11 @@ export default function Home() {
 
       <footer className={styles.footer}>
         <span>Garaj, made in Sri Lanka by Gedara Workshop</span>
-        <span>© 2026</span>
+        <span className={styles.footerLinks}>
+          <Link href="/privacy">Privacy policy</Link>
+          <Link href="/delete-account">Delete your account</Link>
+          <span>© 2026</span>
+        </span>
       </footer>
     </div>
   );
